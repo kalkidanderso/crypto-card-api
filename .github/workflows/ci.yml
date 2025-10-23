@@ -65,6 +65,10 @@ jobs:
           DB_DATABASE: crypto_card_db_test
           JWT_SECRET: test-secret
           JWT_REFRESH_SECRET: test-refresh-secret
+          JWT_EXPIRATION: 15m
+          JWT_REFRESH_EXPIRATION: 7d
+          REDIS_HOST: localhost
+          REDIS_PORT: 6379
 
       - name: Generate test coverage
         run: npm run test:cov

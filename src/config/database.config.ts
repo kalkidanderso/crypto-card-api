@@ -12,7 +12,7 @@ export default registerAs(
     database: process.env.DB_DATABASE || 'crypto_card_db',
     entities: [__dirname + '/../**/*.entity.js'],
     autoLoadEntities: true,
-    synchronize: process.env.DB_SYNCHRONIZE === 'true' || process.env.NODE_ENV === 'development',
+    synchronize: process.env.DB_SYNCHRONIZE === 'true' || process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test',
     logging: process.env.NODE_ENV === 'development',
     ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
   }),
