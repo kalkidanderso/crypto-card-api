@@ -65,10 +65,15 @@ export class WalletsService {
   }
 
   async deposit(walletId: string, userId: string, depositDto: DepositDto) {
-    const wallet = await this.getWalletById(walletId, userId);
+    const wallet = await this.walletRepository.findOne({
+      where: { id: walletId, userId },
+    });
+
+    if (!wallet) {
+      throw new NotFoundException('Wallet not found');
+    }
 
     const transaction = this.transactionRepository.create({
-      wallet: wallet,
       walletId: wallet.id,
       type: TransactionType.DEPOSIT,
       status: TransactionStatus.COMPLETED,
@@ -92,14 +97,19 @@ export class WalletsService {
   }
 
   async withdraw(walletId: string, userId: string, withdrawDto: WithdrawDto) {
-    const wallet = await this.getWalletById(walletId, userId);
+    const wallet = await this.walletRepository.findOne({
+      where: { id: walletId, userId },
+    });
+
+    if (!wallet) {
+      throw new NotFoundException('Wallet not found');
+    }
 
     if (Number(wallet.balance) < withdrawDto.amount) {
       throw new BadRequestException('Insufficient balance');
     }
 
     const transaction = this.transactionRepository.create({
-      wallet: wallet,
       walletId: wallet.id,
       type: TransactionType.WITHDRAWAL,
       status: TransactionStatus.PENDING,
