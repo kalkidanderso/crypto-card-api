@@ -68,6 +68,7 @@ export class WalletsService {
     const wallet = await this.getWalletById(walletId, userId);
 
     const transaction = this.transactionRepository.create({
+      wallet: wallet,
       walletId: wallet.id,
       type: TransactionType.DEPOSIT,
       status: TransactionStatus.COMPLETED,
@@ -78,15 +79,15 @@ export class WalletsService {
       description: 'Deposit to wallet',
     });
 
-    await this.transactionRepository.save(transaction);
+    const savedTransaction = await this.transactionRepository.save(transaction);
 
     wallet.balance = Number(wallet.balance) + depositDto.amount;
-    await this.walletRepository.save(wallet);
+    const updatedWallet = await this.walletRepository.save(wallet);
 
     return {
       message: 'Deposit successful',
-      transaction,
-      newBalance: wallet.balance,
+      transaction: savedTransaction,
+      newBalance: updatedWallet.balance,
     };
   }
 
@@ -98,6 +99,7 @@ export class WalletsService {
     }
 
     const transaction = this.transactionRepository.create({
+      wallet: wallet,
       walletId: wallet.id,
       type: TransactionType.WITHDRAWAL,
       status: TransactionStatus.PENDING,
@@ -110,21 +112,21 @@ export class WalletsService {
       fee: withdrawDto.amount * 0.001, // 0.1% fee
     });
 
-    await this.transactionRepository.save(transaction);
+    const savedTransaction = await this.transactionRepository.save(transaction);
 
-    wallet.balance = Number(wallet.balance) - withdrawDto.amount - transaction.fee;
-    await this.walletRepository.save(wallet);
+    wallet.balance = Number(wallet.balance) - withdrawDto.amount - savedTransaction.fee;
+    const updatedWallet = await this.walletRepository.save(wallet);
 
     // Async blockchain confirmation
     setTimeout(async () => {
-      transaction.status = TransactionStatus.COMPLETED;
-      await this.transactionRepository.save(transaction);
+      savedTransaction.status = TransactionStatus.COMPLETED;
+      await this.transactionRepository.save(savedTransaction);
     }, 3000);
 
     return {
       message: 'Withdrawal initiated',
-      transaction,
-      newBalance: wallet.balance,
+      transaction: savedTransaction,
+      newBalance: updatedWallet.balance,
     };
   }
 
