@@ -11,8 +11,6 @@ import { CreateWalletDto, DepositDto, WithdrawDto } from './dto/wallet.dto';
 
 describe('WalletsService', () => {
   let service: WalletsService;
-  let walletRepository: Repository<Wallet>;
-  let transactionRepository: Repository<Transaction>;
 
   const mockWallet = {
     id: '123e4567-e89b-12d3-a456-426614174000',
@@ -67,10 +65,6 @@ describe('WalletsService', () => {
     }).compile();
 
     service = module.get<WalletsService>(WalletsService);
-    walletRepository = module.get<Repository<Wallet>>(getRepositoryToken(Wallet));
-    transactionRepository = module.get<Repository<Transaction>>(
-      getRepositoryToken(Transaction),
-    );
 
     jest.clearAllMocks();
   });

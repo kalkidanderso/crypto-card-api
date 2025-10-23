@@ -8,7 +8,6 @@ import { Role } from '../../common/enums/role.enum';
 
 describe('UsersService', () => {
   let service: UsersService;
-  let repository: Repository<User>;
 
   const mockUser = {
     id: '123e4567-e89b-12d3-a456-426614174000',
@@ -47,7 +46,6 @@ describe('UsersService', () => {
     }).compile();
 
     service = module.get<UsersService>(UsersService);
-    repository = module.get<Repository<User>>(getRepositoryToken(User));
 
     jest.clearAllMocks();
   });

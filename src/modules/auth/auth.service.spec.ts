@@ -12,9 +12,6 @@ import { Role } from '../../common/enums/role.enum';
 
 describe('AuthService', () => {
   let service: AuthService;
-  let userRepository: Repository<User>;
-  let jwtService: JwtService;
-  let configService: ConfigService;
 
   const mockUser = {
     id: '123e4567-e89b-12d3-a456-426614174000',
@@ -74,9 +71,6 @@ describe('AuthService', () => {
     }).compile();
 
     service = module.get<AuthService>(AuthService);
-    userRepository = module.get<Repository<User>>(getRepositoryToken(User));
-    jwtService = module.get<JwtService>(JwtService);
-    configService = module.get<ConfigService>(ConfigService);
 
     jest.clearAllMocks();
   });
