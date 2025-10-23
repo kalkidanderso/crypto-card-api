@@ -1,30 +1,5 @@
 services:
-  # PostgreSQL Database
-  - type: pserv
-    name: crypto-card-postgres
-    env: docker
-    plan: starter
-    region: oregon
-    image:
-      url: docker.io/postgres:16-alpine
-    envVars:
-      - key: POSTGRES_USER
-        value: postgres
-      - key: POSTGRES_PASSWORD
-        generateValue: true
-      - key: POSTGRES_DB
-        value: crypto_card_db
-
-  # Redis Cache
-  - type: pserv
-    name: crypto-card-redis
-    env: docker
-    plan: starter
-    region: oregon
-    image:
-      url: docker.io/redis:7-alpine
-
-  # NestJS API
+  # NestJS API (DB/Redis must be provisioned separately in Render and env vars set)
   - type: web
     name: crypto-card-api
     env: docker
@@ -35,25 +10,19 @@ services:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 3000
+        value: "3000"
       - key: API_PREFIX
         value: api/v1
       - key: DB_HOST
-        fromService:
-          type: pserv
-          name: crypto-card-postgres
-          property: host
+        value: ""
       - key: DB_PORT
-        value: 5432
+        value: "5432"
       - key: DB_USERNAME
-        value: postgres
+        value: "postgres"
       - key: DB_PASSWORD
-        fromService:
-          type: pserv
-          name: crypto-card-postgres
-          envVarKey: POSTGRES_PASSWORD
+        value: ""
       - key: DB_DATABASE
-        value: crypto_card_db
+        value: "crypto_card_db"
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRATION
@@ -63,18 +32,15 @@ services:
       - key: JWT_REFRESH_EXPIRATION
         value: 7d
       - key: REDIS_HOST
-        fromService:
-          type: pserv
-          name: crypto-card-redis
-          property: host
+        value: ""
       - key: REDIS_PORT
-        value: 6379
+        value: "6379"
       - key: REDIS_TTL
-        value: 300
+        value: "300"
       - key: THROTTLE_TTL
-        value: 60
+        value: "60"
       - key: THROTTLE_LIMIT
-        value: 10
+        value: "10"
       - key: CRYPTO_API_KEY
         value: demo_crypto_api_key
       - key: CRYPTO_API_URL
