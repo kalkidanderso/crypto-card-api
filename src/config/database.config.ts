@@ -16,7 +16,7 @@ export default registerAs(
         url: databaseUrl,
         entities: [__dirname + '/../**/*.entity.js'],
         autoLoadEntities: true,
-        synchronize: process.env.DB_SYNCHRONIZE === 'true' || isDev || isTest,
+        synchronize: true, // Auto-create tables (enabled for demo)
         logging: isDev,
         // In many hosted environments SSL is required
         ssl:
@@ -35,7 +35,7 @@ export default registerAs(
       database: process.env.DB_DATABASE || 'crypto_card_db',
       entities: [__dirname + '/../**/*.entity.js'],
       autoLoadEntities: true,
-      synchronize: process.env.DB_SYNCHRONIZE === 'true' || isDev || isTest,
+      synchronize: true, // Auto-create tables (enabled for demo)
       logging: isDev,
       ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
     } as TypeOrmModuleOptions;
