@@ -1,0 +1,90 @@
+services:
+  # PostgreSQL Database
+  - type: pserv
+    name: crypto-card-postgres
+    env: docker
+    plan: free
+    region: oregon
+    image:
+      url: docker.io/postgres:16-alpine
+    disk:
+      name: postgres-data
+      mountPath: /var/lib/postgresql/data
+      sizeGB: 1
+    envVars:
+      - key: POSTGRES_USER
+        value: postgres
+      - key: POSTGRES_PASSWORD
+        generateValue: true
+      - key: POSTGRES_DB
+        value: crypto_card_db
+
+  # Redis Cache
+  - type: pserv
+    name: crypto-card-redis
+    env: docker
+    plan: free
+    region: oregon
+    image:
+      url: docker.io/redis:7-alpine
+
+  # NestJS API
+  - type: web
+    name: crypto-card-api
+    env: docker
+    region: oregon
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: API_PREFIX
+        value: api/v1
+      - key: DB_HOST
+        fromService:
+          type: pserv
+          name: crypto-card-postgres
+          property: host
+      - key: DB_PORT
+        value: 5432
+      - key: DB_USERNAME
+        value: postgres
+      - key: DB_PASSWORD
+        fromService:
+          type: pserv
+          name: crypto-card-postgres
+          envVarKey: POSTGRES_PASSWORD
+      - key: DB_DATABASE
+        value: crypto_card_db
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION
+        value: 15m
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_EXPIRATION
+        value: 7d
+      - key: REDIS_HOST
+        fromService:
+          type: pserv
+          name: crypto-card-redis
+          property: host
+      - key: REDIS_PORT
+        value: 6379
+      - key: REDIS_TTL
+        value: 300
+      - key: THROTTLE_TTL
+        value: 60
+      - key: THROTTLE_LIMIT
+        value: 10
+      - key: CRYPTO_API_KEY
+        value: demo_crypto_api_key
+      - key: CRYPTO_API_URL
+        value: https://api.example.com/crypto
+      - key: CARD_ISSUER_API_KEY
+        value: demo_card_issuer_key
+      - key: CARD_ISSUER_API_URL
+        value: https://api.cardissuer.example.com
+    healthCheckPath: /api/v1/health

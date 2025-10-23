@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: crypto_card_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: crypto_card_db
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - crypto_card_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: crypto_card_redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    networks:
+      - crypto_card_network
+
+  adminer:
+    image: adminer:latest
+    container_name: crypto_card_adminer
+    ports:
+      - '8080:8080'
+    networks:
+      - crypto_card_network
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  crypto_card_network:
+    driver: bridge
