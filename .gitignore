@@ -27,11 +27,6 @@ lerna-debug.log*
 *.launch
 .settings/
 *.sublime-workspace
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
 
 # Environment
 .env
@@ -44,3 +39,7 @@ lerna-debug.log*
 temp/
 tmp/
 *.tmp
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore

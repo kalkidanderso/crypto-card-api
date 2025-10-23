@@ -12,6 +12,7 @@ import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Role } from '../../common/enums/role.enum';
 
 @ApiTags('Users')
@@ -26,6 +27,12 @@ export class UsersController {
   @ApiOperation({ summary: 'Get all users (Admin only)' })
   findAll() {
     return this.usersService.findAll();
+  }
+
+  @Get('profile')
+  @ApiOperation({ summary: 'Get current user profile' })
+  getProfile(@CurrentUser() user: any) {
+    return this.usersService.findOne(user.userId);
   }
 
   @Get(':id')
