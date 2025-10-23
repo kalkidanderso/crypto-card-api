@@ -1,6 +1,6 @@
 services:
   # PostgreSQL Database
-  - type: private_service
+  - type: pserv
     name: crypto-card-postgres
     env: docker
     plan: starter
@@ -16,7 +16,7 @@ services:
         value: crypto_card_db
 
   # Redis Cache
-  - type: private_service
+  - type: pserv
     name: crypto-card-redis
     env: docker
     plan: starter
@@ -40,7 +40,7 @@ services:
         value: api/v1
       - key: DB_HOST
         fromService:
-          type: private_service
+          type: pserv
           name: crypto-card-postgres
           property: host
       - key: DB_PORT
@@ -49,7 +49,7 @@ services:
         value: postgres
       - key: DB_PASSWORD
         fromService:
-          type: private_service
+          type: pserv
           name: crypto-card-postgres
           envVarKey: POSTGRES_PASSWORD
       - key: DB_DATABASE
@@ -64,7 +64,7 @@ services:
         value: 7d
       - key: REDIS_HOST
         fromService:
-          type: private_service
+          type: pserv
           name: crypto-card-redis
           property: host
       - key: REDIS_PORT
